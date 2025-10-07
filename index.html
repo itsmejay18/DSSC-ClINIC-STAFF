@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSSC Clinic Staff Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="header-title">DSSC Clinic Staff Portal</h1>
+            <div class="header-actions">
+                <div class="notifications" id="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="nav-item active" data-section="profile">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </div>
+            <div class="nav-item" data-section="inventory">
+                <i class="fas fa-pills"></i>
+                <span>Drug Handling</span>
+            </div>
+            <div class="nav-item" data-section="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Borrower Transactions</span>
+            </div>
+            <div class="nav-item" data-section="monitoring">
+                <i class="fas fa-chart-line"></i>
+                <span>Monitoring</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Profile Section -->
+        <section class="content-section active" id="profileSection">
+            <div class="section-header">
+                <h2>Profile Management</h2>
+            </div>
+            
+            <div class="card">
+                <div class="profile-container">
+                    <div class="profile-picture-section">
+                        <div class="profile-picture" id="profilePictureContainer">
+                            <img id="profileImage" src="https://images.pexels.com/photos/5327580/pexels-photo-5327580.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Profile Picture">
+                            <div class="upload-overlay">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('profilePictureInput').click()">
+                            <i class="fas fa-upload"></i> Upload Photo
+                        </button>
+                    </div>
+                    
+                    <div class="profile-form">
+                        <div class="form-group">
+                            <label for="staffName">Full Name</label>
+                            <input type="text" id="staffName" placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="staffDepartment">Department</label>
+                            <select id="staffDepartment">
+                                <option value="">Select Department</option>
+                                <option value="nursing">Nursing</option>
+                                <option value="pharmacy">Pharmacy</option>
+                                <option value="administration">Administration</option>
+                                <option value="medical">Medical</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="staffContact">Contact Number</label>
+                            <input type="tel" id="staffContact" placeholder="Enter contact number">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="staffEmail">Email Address</label>
+                            <input type="email" id="staffEmail" placeholder="Enter email address">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveProfile()">
+                            <i class="fas fa-save"></i> Save Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drug Handling Section -->
+        <section class="content-section" id="inventorySection">
+            <div class="section-header">
+                <h2>Drug Handling & Inventory</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="showAddDrugModal()">
+                        <i class="fas fa-plus"></i> Manual Entry
+                    </button>
+                    <button class="btn btn-primary" onclick="showBarcodeScanModal()">
+                        <i class="fas fa-barcode"></i> Barcode Scan
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="inventory-controls">
+                    <input type="text" id="inventorySearch" placeholder="Search drugs..." class="search-input">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="tablet">Tablets</option>
+                        <option value="syrup">Syrups</option>
+                        <option value="capsule">Capsules</option>
+                        <option value="injection">Injections</option>
+                    </select>
+                </div>
+                
+                <div class="inventory-table-container">
+                    <table class="inventory-table" id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>Drug Name</th>
+                                <th>Brand</th>
+                                <th>Category</th>
+                                <th>Strength</th>
+                                <th>Quantity</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Borrower Transactions Section -->
+        <section class="content-section" id="transactionsSection">
+            <div class="section-header">
+                <h2>Borrower Transactions</h2>
+                <button class="btn btn-primary" onclick="showNewTransactionModal()">
+                    <i class="fas fa-plus"></i> New Transaction
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="transaction-search">
+                    <input type="text" id="studentSearch" placeholder="Search student by name or ID..." class="search-input">
+                </div>
+                
+                <div class="transaction-table-container">
+                    <table class="transaction-table" id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Student ID</th>
+                                <th>Student Name</th>
+                                <th>Drug</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monitoring Section -->
+        <section class="content-section" id="monitoringSection">
+            <div class="section-header">
+                <h2>Monitoring & Alerts</h2>
+            </div>
+            
+            <div class="monitoring-grid">
+                <div class="card alert-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Expiry Alerts</h3>
+                    <div class="alert-count" id="expiryAlertCount">0</div>
+                    <p>Drugs expiring within 7 days</p>
+                    <div class="alert-list" id="expiryAlertList"></div>
+                </div>
+                
+                <div class="card alert-card">
+                    <h3><i class="fas fa-boxes"></i> Low Stock Alerts</h3>
+                    <div class="alert-count" id="lowStockAlertCount">0</div>
+                    <p>Drugs with quantity &lt; 5</p>
+                    <div class="alert-list" id="lowStockAlertList"></div>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-history"></i> Activity Log</h3>
+                    <div class="activity-log" id="activityLog"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Drug Modal -->
+    <div class="modal" id="addDrugModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Drug - Manual Entry</h3>
+                <button class="modal-close" onclick="closeModal('addDrugModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addDrugForm">
+                    <div class="form-group">
+                        <label for="drugName">Drug Name</label>
+                        <input type="text" id="drugName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugBrand">Brand</label>
+                        <input type="text" id="drugBrand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugCategory">Category</label>
+                        <select id="drugCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="tablet">Tablet</option>
+                            <option value="syrup">Syrup</option>
+                            <option value="capsule">Capsule</option>
+                            <option value="injection">Injection</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugStrength">Strength</label>
+                        <input type="text" id="drugStrength" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugQuantity">Quantity</label>
+                        <input type="number" id="drugQuantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugExpiry">Expiry Date</label>
+                        <input type="date" id="drugExpiry" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addDrugModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Drug</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barcode Scan Modal -->
+    <div class="modal" id="barcodeScanModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Drug - Barcode Scan</h3>
+                <button class="modal-close" onclick="closeModal('barcodeScanModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="barcode-scanner">
+                    <video id="barcodeVideo" autoplay playsinline></video>
+                    <canvas id="barcodeCanvas" style="display: none;"></canvas>
+                    <div class="scanner-overlay">
+                        <div class="scanner-line"></div>
+                        <p>Position barcode within the frame</p>
+                    </div>
+                </div>
+                <div class="scanned-info" id="scannedInfo" style="display: none;">
+                    <h4>Scanned Barcode: <span id="scannedBarcode"></span></h4>
+                    <form id="scannedDrugForm">
+                        <div class="form-group">
+                            <label for="scannedDrugName">Drug Name</label>
+                            <input type="text" id="scannedDrugName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scannedDrugBrand">Brand</label>
+                            <input type="text" id="scannedDrugBrand" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scannedDrugCategory">Category</label>
+                            <select id="scannedDrugCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="tablet">Tablet</option>
+                                <option value="syrup">Syrup</option>
+                                <option value="capsule">Capsule</option>
+                                <option value="injection">Injection</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="scannedDrugStrength">Strength</label>
+                            <input type="text" id="scannedDrugStrength" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scannedDrugQuantity">Quantity</label>
+                            <input type="number" id="scannedDrugQuantity" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scannedDrugExpiry">Expiry Date</label>
+                            <input type="date" id="scannedDrugExpiry" required>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary" onclick="resetBarcodeScanner()">Scan Again</button>
+                            <button type="submit" class="btn btn-primary">Add Drug</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="barcode-actions" id="barcodeActions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('barcodeScanModal')">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="simulateBarcodeScan()">Simulate Scan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div class="modal" id="transactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Borrower Transaction</h3>
+                <button class="modal-close" onclick="closeModal('transactionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label for="transactionStudent">Student</label>
+                        <select id="transactionStudent" required>
+                            <option value="">Select Student</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDrug">Drug</label>
+                        <select id="transactionDrug" required>
+                            <option value="">Select Drug</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionQuantity">Quantity</label>
+                        <input type="number" id="transactionQuantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionNotes">Medical Notes</label>
+                        <textarea id="transactionNotes" rows="3" placeholder="Treatment notes, symptoms, etc."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('transactionModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Record Transaction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="barcode-scanner.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
